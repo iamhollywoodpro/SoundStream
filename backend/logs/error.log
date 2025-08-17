@@ -1,0 +1,2 @@
+2025-07-26 14:56:49 ERROR: Error in lyrics generation endpoint:: Cannot destructure property 'title' of 'req.body' as it is undefined.
+2025-07-26 14:56:59 ERROR: Error in music generation endpoint:: Cannot destructure property 'title' of 'req.body' as it is undefined.

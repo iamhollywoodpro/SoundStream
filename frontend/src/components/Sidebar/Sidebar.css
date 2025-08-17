@@ -1,0 +1,32 @@
+.sidebar {
+  width: 260px;
+  background: #131a2a;
+  min-height: 100vh;
+  padding: 24px 12px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sidebar .logo {
+  margin-bottom: 2.5rem;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 10px;
+  border: none;
+  background: none;
+  transition: all 0.2s;
+}
+.nav-item.active,
+.nav-item:hover {
+  color: #3B82F6;
+  background: rgba(59,130,246,0.09);
+  font-weight: 600;
+}

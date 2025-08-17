@@ -1,0 +1,9 @@
+@import '../ProfileModal/ProfileModal.css';
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 1.1rem 0;
+  color: #fff;
+}

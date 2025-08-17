@@ -1,0 +1,195 @@
+import React, { useState } from 'react';
+import { MusicSettings } from '../../types/music';
+import './MusicGeneratorPage.css';
+
+interface MusicGeneratorPageProps {
+  settings: MusicSettings;
+  setSettings: (settings: MusicSettings) => void;
+  onGenerate?: () => void;
+}
+
+const MusicGeneratorPage: React.FC<MusicGeneratorPageProps> = ({ 
+  settings, 
+  setSettings, 
+  onGenerate 
+}) => {
+  const [showSunoPlayground, setShowSunoPlayground] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [lyrics, setLyrics] = useState<string>('');
+  const [style, setStyle] = useState<string>('pop');
+  const [mood, setMood] = useState<string>('upbeat');
+  
+  // Styles available in your UI
+  const musicStyles: string[] = [
+    'Pop', 'Hip Hop', 'R&B', 'Rock', 'Electronic', 
+    'Dance', 'Country', 'Jazz', 'Classical', 'Indie',
+    'Lo-fi', 'Ambient', 'Folk', 'Trap', 'House'
+  ];
+  
+  // Moods for your songs
+  const musicMoods: string[] = [
+    'Upbeat', 'Energetic', 'Chill', 'Melancholic',
+    'Romantic', 'Dreamy', 'Dark', 'Inspiring',
+    'Relaxed', 'Aggressive', 'Happy', 'Sad'
+  ];
+
+  // Handle starting the SUNO playground experience
+  const openSunoPlayground = () => {
+    if (!title) {
+      alert("Please enter a song title first");
+      return;
+    }
+    
+    // Build the URL with parameters
+    const sunoPlaygroundUrl = `https://sunoapi.org/playground?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&style=${encodeURIComponent(style)}&mood=${encodeURIComponent(mood)}`;
+    
+    // Open in a new tab/window
+    window.open(sunoPlaygroundUrl, '_blank');
+    
+    if (onGenerate) onGenerate();
+  };
+  
+  // Launch in iframe
+  const launchEmbeddedPlayground = () => {
+    setShowSunoPlayground(true);
+  };
+  
+  // Go back to form
+  const goBackToForm = () => {
+    setShowSunoPlayground(false);
+  };
+
+  return (
+    <div className="page active">
+      {/* Header and title styled like SoundStream */}
+      <div className="soundstream-header">
+        <h1 className="soundstream-title">
+          Sound<span className="highlight">Stream</span>
+        </h1>
+        <div className="soundstream-subtitle">
+          AI-powered music creation studio
+        </div>
+      </div>
+      
+      {/* Main content */}
+      <div className="music-generator-layout">
+        {!showSunoPlayground ? (
+          <div className="panel">
+            <h3 className="panel-title">Create Music with SUNO API</h3>
+            
+            <div className="form-group">
+              <label>Song Title</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter song title..."
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Song Description</label>
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="What's your song about?"
+                className="form-input"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Music Style</label>
+              <select 
+                value={style}
+                onChange={(e) => setStyle(e.target.value.toLowerCase())}
+                className="form-select"
+              >
+                <option value="">Select Style</option>
+                {musicStyles.map((style) => (
+                  <option key={style} value={style.toLowerCase()}>{style}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label>Mood</label>
+              <select
+                value={mood}
+                onChange={(e) => setMood(e.target.value.toLowerCase())}
+                className="form-select"
+              >
+                <option value="">Select Mood</option>
+                {musicMoods.map((mood) => (
+                  <option key={mood} value={mood.toLowerCase()}>{mood}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label>Lyrics (Optional)</label>
+              <textarea
+                value={lyrics}
+                onChange={(e) => setLyrics(e.target.value)}
+                placeholder="Enter lyrics here (optional)..."
+                className="form-textarea"
+                rows={6}
+              />
+            </div>
+            
+            <div className="suno-buttons">
+              <button
+                onClick={openSunoPlayground}
+                className="generate-button"
+              >
+                Open SUNO API Playground
+              </button>
+              
+              <button
+                onClick={launchEmbeddedPlayground}
+                className="secondary-button"
+              >
+                Launch Embedded Playground
+              </button>
+            </div>
+            
+            <div className="suno-instructions">
+              <h4>How to use SUNO API Playground:</h4>
+              <ol>
+                <li>Fill in the song details above</li>
+                <li>Click "Open SUNO API Playground"</li>
+                <li>Use your SUNO API key to authenticate: <code>c3367b96713745a2de3b1f8e1dde4787</code></li>
+                <li>Your song details will be pre-filled in the playground</li>
+                <li>Generate music and download the result</li>
+                <li>Upload the downloaded track to your SoundStream library</li>
+              </ol>
+            </div>
+          </div>
+        ) : (
+          // Embedded SUNO API Playground
+          <div className="suno-container">
+            <div className="suno-header">
+              <h3>Creating: {title}</h3>
+              <button onClick={goBackToForm} className="back-button">← Back</button>
+            </div>
+            
+            <div className="suno-iframe-container">
+              <iframe 
+                src={`https://sunoapi.org/playground?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&style=${encodeURIComponent(style)}&mood=${encodeURIComponent(mood)}`}
+                title="SUNO API Playground"
+                width="100%"
+                height="800px"
+                frameBorder="0"
+                allow="microphone; camera"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MusicGeneratorPage;
